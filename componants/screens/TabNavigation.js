@@ -6,6 +6,8 @@ import MyCart from './MyCart';
 import Account from './Account';
 import ProductInfo from './ProductInfo';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SignUp from './Signup';
+import Login from './Login';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -31,7 +33,7 @@ const MyTabs=()=> {
         }}
       />
      
-      <Tab.Screen
+      {/* <Tab.Screen
         name="MyCart"
         component={MyCart}
         options={{
@@ -40,10 +42,10 @@ const MyTabs=()=> {
             <MaterialCommunityIcons name="cart" color={color} size={26} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Account"
-        component={Account}
+        component={Login}
         options={{
           tabBarLabel: 'Account',
           tabBarIcon: ({ color }) => (

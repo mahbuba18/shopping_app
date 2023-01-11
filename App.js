@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { View,Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -60,8 +59,6 @@ export default App
         <Stack.Screen name='MyCart' component={MyCart}/>
         <Stack.Screen name='ProductInfo' component={ProductInfo}/>
         <Stack.Screen name='Bottom' component={MyTabs}/>
-        <Stack.Screen name='Search' component={Search}/>
-
 
         
       </Stack.Navigator>
