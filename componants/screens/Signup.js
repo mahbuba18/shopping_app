@@ -12,7 +12,7 @@ export default class SignUp extends React.Component {
   signUp = async () => {
     const { username, password, email} = this.state
     try {
-      await axios.post('http://192.168.83.138:5000/api/auth/signup',{ username, password, email} )
+      await axios.post('http://192.168.0.3:5000/api/auth/signup',{ username, password, email} )
        .then(res=>{
         if(res){
           Alert.alert("Signup successfull");

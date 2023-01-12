@@ -3,6 +3,7 @@ import { View,Text } from 'react-native'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { COLOURS } from '../database/Database'
 import SignUp from './Signup';
+import EmailCheck from './EmailCheck';
 
 const Tab = createMaterialBottomTabNavigator();
 const Account=()=> {
@@ -10,7 +11,7 @@ const Account=()=> {
   return (
     <Tab.Screen
         name="Account"
-        component={SignUp}
+        component={EmailCheck}
         options={{
           tabBarLabel: 'Account',
           tabBarIcon: ({ color }) => (
