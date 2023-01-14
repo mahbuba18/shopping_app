@@ -4,11 +4,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './componants/screens/Home'
 import MyCart from './componants/screens/MyCart';
-import ProductInfo from './componants/screens/ProductInfo';
+import ProductInfo from './componants/screens/Product';
 import MyTabs from './componants/screens/TabNavigation';
 
 import Account from './componants/screens/Account';
 import { TabNavigator } from 'react-navigation';
+import Login from './componants/screens/Login';
+import SignUp from './componants/screens/Signup';
+import Product from './componants/screens/Product';
+import { ProductCard } from './componants/screens/ProductCard';
 
 
 
@@ -19,22 +23,20 @@ const Stack = createNativeStackNavigator();
   return (
     
     <NavigationContainer>
-    <Stack.Navigator
-     initialRouteName='Bottom'
-      screenOptions={{
-        headerShown:false,
-      }}>
-        <Stack.Screen name='Home' component={Home}/>
-        <Stack.Screen name='MyCart' component={MyCart}/>
-        <Stack.Screen name='ProductInfo' component={ProductInfo}/>
-        <Stack.Screen name='Bottom' component={MyTabs}/>
-        
-
-
-        
+      <Stack.Navigator
+      initialRouteName='Bottom'
+        screenOptions={{
+          headerShown:false,
+        }}>
+          <Stack.Screen name='Home' component={Home}/>
+          <Stack.Screen name='MyCart' component={MyCart}/>
+          <Stack.Screen name='Product' component={Product}/>
+          <Stack.Screen name='ProductCard' component={ProductCard}/>
+          <Stack.Screen name='Bottom' component={MyTabs}/>
+          <Stack.Screen name='Login' component={Login}/>
+          <Stack.Screen name='Signup' component={SignUp}/>
       </Stack.Navigator>
-
-      </NavigationContainer>
+    </NavigationContainer>
      
 
   );

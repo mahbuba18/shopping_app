@@ -1,19 +1,3 @@
-/*import React from 'react'
-import { View,Text } from 'react-native'
-import { COLOURS } from '../database/Database'
-
-function MyCart() {
-
-  return (
-    <View>
-        <Text style={{
-          color:COLOURS.black,
-        }}>MyCart</Text>
-    </View>
-  )
-}
-
-export default MyCart*/
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -26,38 +10,50 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLOURS, Items} from '../database/Database';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import axios from 'axios';
+import { SERVER_URL } from '../utils/constants';
+import useCartproduct from '../../hooks/useCartProduct';
 
 const MyCart = ({navigation}) => {
-  const [product, setProduct] = useState();
+  const [carts, setCarts] = useState([])
+  const [cartProducts, setCartProducts]= useState([])
   const [total, setTotal] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      getDataFromDB();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  //get data from local DB by ID
-  const getDataFromDB = async () => {
-    let items = await AsyncStorage.getItem('cartItems');
-    items = JSON.parse(items);
-    let productData = [];
-    if (items) {
-      Items.forEach(data => {
-        if (items.includes(data.id)) {
-          productData.push(data);
-          return;
+    const load = async() =>{
+      axios.get(`${SERVER_URL}/api/carts`,{
+        headers: {
+          token: `Bearer ${JSON.parse(await AsyncStorage.getItem('accessToken'))}`,
+          'Content-Type': 'application/json'
         }
-      });
-      setProduct(productData);
-      getTotal(productData);
-    } else {
-      setProduct(false);
-      getTotal(false);
+      }).then(res=>setCarts(res.data[0].products))
+      .catch(err=>console.log(err.message))
+
     }
-  };
+    load();
+  }, []);
+  useEffect(() => {
+   const load = async()=>{
+      axios.get(`${SERVER_URL}/api/products`,{
+        headers: {
+          token: `Bearer ${JSON.parse(await AsyncStorage.getItem('accessToken'))}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(res=>{
+        const getCartProducts =(products, carts) => {
+        return products.filter(product=>carts.some(cart=> cart.productId == product._id))
+
+        }
+        const result = getCartProducts(res.data, carts)
+        setCartProducts(result)
+      })
+      .catch(err=>console.log(err.message))
+   }
+   load()
+  },[carts])
+
+ 
+  console.log({cartProducts})
 
   //get total price of all items in the cart
   const getTotal = productData => {
@@ -82,7 +78,7 @@ const MyCart = ({navigation}) => {
         }
 
         await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        getDataFromDB();
+        //getDataFromDB();
       }
     }
   };
@@ -102,10 +98,11 @@ const MyCart = ({navigation}) => {
   };
 
   const renderProducts = (data, index) => {
+    //console.log({data})
     return (
       <TouchableOpacity
         key={data.key}
-        onPress={() => navigation.navigate('ProductInfo', {productID: data.id})}
+        onPress={() => navigation.navigate('Product', {productID: data._id})}
         style={{
           width: '100%',
           height: 100,
@@ -114,6 +111,7 @@ const MyCart = ({navigation}) => {
           alignItems: 'center',
         }}>
         <View
+          key={index}
           style={{
             width: '30%',
             height: 100,
@@ -125,7 +123,7 @@ const MyCart = ({navigation}) => {
             marginRight: 22,
           }}>
           <Image
-            source={data.productImage}
+            source={{uri:data.img}}
             style={{
               width: '100%',
               height: '100%',
@@ -290,7 +288,7 @@ const MyCart = ({navigation}) => {
           My Cart
         </Text>
         <View style={{paddingHorizontal: 16}}>
-          {product ? product.map(renderProducts) : null}
+          {cartProducts ? cartProducts.map(renderProducts) : null}
         </View>
         <View>
           <View

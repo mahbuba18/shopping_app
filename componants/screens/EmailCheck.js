@@ -4,55 +4,46 @@ import { View,Button,TextInput,StyleSheet,Alert} from 'react-native'
 import { Title } from 'react-native-paper'
 import { SERVER_URL } from '../utils/constants'
 
-export default class SignUp extends React.Component {
+export default class EmailCheck extends React.Component {
   state = {
-    username: '', password: '', email: ''
+    email: ''
   }
   onChangeText = (key, val) => {
     this.setState({ [key]: val })
   }
-  signUp = async () => {
-    const { username, password, email} = this.state
+  emailCheck = async () => {
+    const { email } = this.state
     try {
-      await axios.post(`${SERVER_URL}/api/auth/signup`,{ username, password, email} )
+      await axios.post(`${SERVER_URL}/api/auth/emailcheck`,{ email })
        .then(res=>{
-        if(res){
-          Alert.alert("Signup successfull");
+        if(res.data.result){
+          this.props.navigation.navigate('Login');
         }
-       })
-      this.setState({username: '', password: '', email: ''});
+        })
+       .catch(err =>{ 
+         this.props.navigation.navigate('Signup');
+      })
+      this.setState({username: '', password: ''});
 
     } catch (err) {
-      console.log('error signing up: ', err)
+      console.log('error login: ', err)
     }
   }
  
   render() {
     return (
       <View style={styles.container}>
-        <Title>Please Signup</Title>
-        <TextInput
-          style={styles.input}
-          placeholder='Username'
-          autoCapitalize="none"
-          onChangeText={val => this.onChangeText('username', val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder='Password'
-          secureTextEntry={true}
-          autoCapitalize="none"
-          onChangeText={val => this.onChangeText('password', val)}
-        />
+        <Title>Check Email First</Title>
         <TextInput
           style={styles.input}
           placeholder='Email'
           autoCapitalize="none"
+          //placeholderTextColor=''
           onChangeText={val => this.onChangeText('email', val)}
         />
         <Button
-          title='Sign Up'
-          onPress={this.signUp}
+          title='Submit'
+          onPress={this.emailCheck}
         />
       </View>
     )
