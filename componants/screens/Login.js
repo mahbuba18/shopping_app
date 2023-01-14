@@ -19,8 +19,9 @@ export default class Login extends React.Component {
       await axios.post(`${SERVER_URL}/api/auth/login`,{ username, password} )
        .then(async(res)=>{
         if(res){
-          await AsyncStorage.setItem('accessToken', JSON.stringify(res.data.accessToken) )
-          Alert.alert("Login successfull");
+          await AsyncStorage.setItem('accessToken', JSON.stringify(res.data.accessToken) );
+          this.props.navigation.navigate('Home');
+          //Alert.alert("Login successfull");
         }
        })
        .catch(err =>{ 
