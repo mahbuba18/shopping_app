@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Home from './Home';
 import MyCart from './MyCart';
 import Account from './Account';
-import ProductInfo from './ProductInfo';
+import ProductInfo from './Product';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignUp from './Signup';
 import Login from './Login';

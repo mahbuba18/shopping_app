@@ -2,79 +2,103 @@ import React, { useEffect, useState } from 'react';
 import { View,Text,StatusBar,ScrollView,TouchableOpacity,FlatList,Image,Dimensions,Animated, ToastAndroid} from 'react-native'
 import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
+import { SERVER_URL } from '../utils/constants';
+import useCart from '../../hooks/useCartProduct';
 
-const ProductInfo = ({route, navigation}) =>{
+const Product = ({route, navigation}) =>{
    const {productID} = route.params;
+   //const [carts, setCarts] = useCart()
+   console.log(productID)
 
-   const[product, setProducts]= useState({})
+   const[product, setProduct]= useState({})
    const width = Dimensions.get('window').width
 
    const scrollX = new Animated.Value(0);
    let position = Animated.divide(scrollX,width)
 
+   
+
    useEffect(()=>{
-    const unsubscribe = navigation.addListener('focus', () => {
-      getDataFromDB();
-    });
-
-    return unsubscribe;
-
-   },[navigation])
+    axios.get(`${SERVER_URL}/api/products/${productID}`)
+    .then(res=>setProduct(res.data))
+    .catch(err=>console.log({err: err.message}))
+  
+   },[productID])
    //get product data by productID
-   const getDataFromDB = async()=>{
-    for(let index =0;index<Items.length;index++){
-      if(Items[index].id == productID){
-        await setProducts(Items[index]);
-        return;
-      }
-    }
-  };
+  //  const getDataFromDB = async()=>{
+  //   for(let index =0;index<Items.length;index++){
+  //     if(Items[index].id == productID){
+  //       await setProducts(Items[index]);
+  //       return;
+  //     }
+  //   }
+  // };
   //add to cart
 
   const addToCart = async id => {
-    let itemArray = await AsyncStorage.getItem('cartItems');
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      array.push(id);
+    let quantity = 1;
+    console.log({productId: id, quantity})
+    //useCart({productId: id, quantity})
+    axios.post(`${SERVER_URL}/api/carts`,{productId: id, quantity},{
+      headers: {
+        token: `Bearer ${JSON.parse(await AsyncStorage.getItem('accessToken'))}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res=>{
+      ToastAndroid.show(
+        'Product Added Successfully to cart',
+        ToastAndroid.SHORT,
+      );
+      navigation.navigate('Home');
+    })
+     .catch(err=>console.log(err.message))
 
-      try {
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        ToastAndroid.show(
-          'Item Added Successfully to cart',
-          ToastAndroid.SHORT,
-        );
-        navigation.navigate('Home');
-      } catch (error) {
-        return error;
-      }
-    } else {
-      let array = [];
-      array.push(id);
-      try {
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        ToastAndroid.show(
-          'Item Added Successfully to cart',
-          ToastAndroid.SHORT,
-        );
-        navigation.navigate('Home');
-      } catch (error) {
-        return error;
-      }
-    }
+
+  //   let itemArray = await AsyncStorage.getItem('cartItems');
+  // console.log(itemArray)
+  //   itemArray = JSON.parse(itemArray);
+  //   if (itemArray) {
+  //     let array = itemArray;
+  //     array.push(id);
+
+  //     try {
+  //       await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+        // ToastAndroid.show(
+        //   'Item Added Successfully to cart',
+        //   ToastAndroid.SHORT,
+        // );
+        // navigation.navigate('Home');
+  //     } catch (error) {
+  //       return error;
+  //     }
+  //   } else {
+  //     let array = [];
+  //     array.push(id);
+  //     try {
+  //       await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+  //       ToastAndroid.show(
+  //         'Item Added Successfully to cart',
+  //         ToastAndroid.SHORT,
+  //       );
+  //       navigation.navigate('Home');
+  //     } catch (error) {
+  //       return error;
+  //     }
+  //   }
   };
 //get horizontal scroll product card
-const renderProduct=({Item,index})=>{
+const renderProduct=({item,index})=>{
   return (
     <View style={{
       width:width,
       height:240,
       alignItems:'center',
       justifyContent:'center',
-    }}>
-      <Image  source={Item} style={{
+    }} key={index}>
+      <Image  source={{uri:item}} style={{
         width:'100%',
         height:'100%',
         resizeMode:'contain',
@@ -123,7 +147,7 @@ const renderProduct=({Item,index})=>{
                 </TouchableOpacity>
               </View>
               <FlatList
-              data={product.productImageList ? product.productImageList :null}
+              data={product.imgList ? product.imgList :null}
                 horizontal 
                 renderItem={renderProduct}
                 showsVerticalScrollIndicator={false}
@@ -145,22 +169,25 @@ const renderProduct=({Item,index})=>{
                   marginTop:32,
                 }}>
                   {
-                    product.productImageList ? product.productImageList.map((data,index)=>{
+                    product.imgList ? product.imgList.map((data,index)=>{
                       let opacity = position.interpolate({
                         inputRange:[index-1,index,index+1],
                         outputRange:[0.2,1,0.2],
                         extrapolate:'clamp'
                       })
                       return(
-                        <Animated.View style={{
-                          width:'16%',
-                          height:2.4,
-                          backgroundColor:COLOURS.black,
-                          opacity,
-                          marginHorizontal:4,
-                          borderRadius:100,
+                        <Animated.View 
+                          key={index}
+                          style={{
+                            width:'16%',
+                            height:2.4,
+                            backgroundColor:COLOURS.black,
+                            opacity,
+                            marginHorizontal:4,
+                            borderRadius:100,
 
-                        }}>
+                          }}
+                        >
 
                         </Animated.View>
                       )
@@ -187,7 +214,7 @@ const renderProduct=({Item,index})=>{
                     color:COLOURS.black,
                     maxWidth:'84%',
                   }}>
-                    {product.productName}
+                    {product.name}
                   </Text> 
                </View>
                <Text style={{
@@ -258,14 +285,14 @@ const renderProduct=({Item,index})=>{
                 color: COLOURS.black,
                 marginBottom: 4,
               }}>
-              Price :{product.productPrice}.00 taka
+              Price : {'\u09F3'}{product.price}.00 
              </Text>
              <Text style={{
               color:COLOURS.black,
              
              }}>
-              With Tax Rate 2% = {product.productPrice / 20} taka (
-              {product.productPrice + product.productPrice / 20} taka)
+              With Tax Rate 2% = {'\u09F3'}{product.price / 20}(
+                {'\u09F3'}{product.price + product.price / 20})
              </Text>
             </View>
            </View>
@@ -279,7 +306,7 @@ const renderProduct=({Item,index})=>{
              alignItems: 'center',
            }}>
             <TouchableOpacity
-            onPress={() => (product.isAvailable ? addToCart(product.id) : null)}
+            onPress={() => (product.inStock ? addToCart(product._id) : null)}
              style={{
               width: '86%',
               height: '90%',
@@ -296,7 +323,7 @@ const renderProduct=({Item,index})=>{
                  color: COLOURS.white,
                  textTransform: 'uppercase',
                    }}>
-                {product.isAvailable ? 'Add to cart' : 'Not Avialable'}
+                {product.inStock ? 'Add to cart' : 'Not Avialable'}
               </Text>
             </TouchableOpacity>
 
@@ -306,4 +333,4 @@ const renderProduct=({Item,index})=>{
       
     };
    
-export default ProductInfo;
+export default Product;

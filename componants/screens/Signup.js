@@ -1,6 +1,8 @@
 import axios from 'axios'
 import React from 'react'
 import { View,Button,TextInput,StyleSheet,Alert} from 'react-native'
+import { Title } from 'react-native-paper'
+import { SERVER_URL } from '../utils/constants'
 
 export default class SignUp extends React.Component {
   state = {
@@ -12,7 +14,7 @@ export default class SignUp extends React.Component {
   signUp = async () => {
     const { username, password, email} = this.state
     try {
-      await axios.post('http://192.168.0.3:5000/api/auth/signup',{ username, password, email} )
+      await axios.post(`${SERVER_URL}/api/auth/signup`,{ username, password, email} )
        .then(res=>{
         if(res){
           Alert.alert("Signup successfull");
@@ -28,11 +30,11 @@ export default class SignUp extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Title>Please Signup</Title>
         <TextInput
           style={styles.input}
           placeholder='Username'
           autoCapitalize="none"
-          placeholderTextColor='white'
           onChangeText={val => this.onChangeText('username', val)}
         />
         <TextInput
@@ -40,14 +42,12 @@ export default class SignUp extends React.Component {
           placeholder='Password'
           secureTextEntry={true}
           autoCapitalize="none"
-          placeholderTextColor='white'
           onChangeText={val => this.onChangeText('password', val)}
         />
         <TextInput
           style={styles.input}
           placeholder='Email'
           autoCapitalize="none"
-          placeholderTextColor='white'
           onChangeText={val => this.onChangeText('email', val)}
         />
         <Button

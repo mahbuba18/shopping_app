@@ -2,6 +2,7 @@ import axios from 'axios'
 import React from 'react'
 import { View,Button,TextInput,StyleSheet,Alert} from 'react-native'
 import { Title } from 'react-native-paper'
+import { SERVER_URL } from '../utils/constants'
 
 export default class EmailCheck extends React.Component {
   state = {
@@ -13,16 +14,14 @@ export default class EmailCheck extends React.Component {
   emailCheck = async () => {
     const { email } = this.state
     try {
-      await axios.post('http://192.168.0.3:5000/api/auth/emailcheck',{ email })
+      await axios.post(`${SERVER_URL}/api/auth/emailcheck`,{ email })
        .then(res=>{
-        if(res){
-          console.log({res: res.data});
-          Alert.alert("Email Found");
+        if(res.data.result){
+          this.props.navigation.navigate('Login');
         }
-       })
+        })
        .catch(err =>{ 
-        console.log({err})
-        Alert.alert(err.message)
+         this.props.navigation.navigate('Signup');
       })
       this.setState({username: '', password: ''});
 

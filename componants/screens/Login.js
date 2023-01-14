@@ -1,6 +1,10 @@
 import axios from 'axios'
+import { style } from 'deprecated-react-native-prop-types/DeprecatedViewPropTypes'
 import React from 'react'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View,Button,TextInput,StyleSheet,Alert} from 'react-native'
+import { Title } from 'react-native-paper'
+import { SERVER_URL } from '../utils/constants'
 
 export default class Login extends React.Component {
   state = {
@@ -12,10 +16,10 @@ export default class Login extends React.Component {
   login = async () => {
     const { username, password } = this.state
     try {
-      await axios.post('http://192.168.0.3:5000/api/auth/login',{ username, password} )
-       .then(res=>{
+      await axios.post(`${SERVER_URL}/api/auth/login`,{ username, password} )
+       .then(async(res)=>{
         if(res){
-          console.log({res: res.data});
+          await AsyncStorage.setItem('accessToken', JSON.stringify(res.data.accessToken) )
           Alert.alert("Login successfull");
         }
        })
@@ -33,11 +37,12 @@ export default class Login extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+         <Title>Please Login</Title>
         <TextInput
           style={styles.input}
           placeholder='Username'
           autoCapitalize="none"
-          placeholderTextColor='white'
+          //placeholderTextColor='white'
           onChangeText={val => this.onChangeText('username', val)}
         />
         <TextInput
@@ -45,7 +50,7 @@ export default class Login extends React.Component {
           placeholder='Password'
           secureTextEntry={true}
           autoCapitalize="none"
-          placeholderTextColor='white'
+          //placeholderTextColor='white'
           onChangeText={val => this.onChangeText('password', val)}
         />
         <Button
@@ -72,5 +77,6 @@ export default class Login extends React.Component {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  
 })
