@@ -12,11 +12,12 @@ import {COLOURS, Items} from '../database/Database';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { SERVER_URL } from '../utils/constants';
-import useCartproduct from '../../hooks/useCartProduct';
+import useProducts from '../../hooks/useProducts';
 
 const MyCart = ({navigation}) => {
   const [carts, setCarts] = useState([])
-  const [cartProducts, setCartProducts]= useState([])
+  const [products, setProducts] = useProducts()
+  const [cartProducts, setCartProducts]= useState()
   const [total, setTotal] = useState(null);
 
   useEffect(() => {
@@ -28,32 +29,22 @@ const MyCart = ({navigation}) => {
         }
       }).then(res=>setCarts(res.data[0].products))
       .catch(err=>console.log(err.message))
-
     }
     load();
   }, []);
-  useEffect(() => {
-   const load = async()=>{
-      axios.get(`${SERVER_URL}/api/products`,{
-        headers: {
-          token: `Bearer ${JSON.parse(await AsyncStorage.getItem('accessToken'))}`,
-          'Content-Type': 'application/json'
-        }
-      }).then(res=>{
-        const getCartProducts =(products, carts) => {
-        return products.filter(product=>carts.some(cart=> cart.productId == product._id))
 
-        }
-        const result = getCartProducts(res.data, carts)
-        setCartProducts(result)
-      })
-      .catch(err=>console.log(err.message))
-   }
-   load()
-  },[carts])
+  useEffect(() => {
+   const getCartProducts =(products, carts) => {
+        return products?.filter(product=>carts.some(cart=> cart.productId == product._id))
+      }
+      const result = getCartProducts(products, carts)
+      setCartProducts(result)
+  },[carts, products])
+
+   
 
  
-  console.log({cartProducts})
+  //console.log({products, carts, cartProducts})
 
   //get total price of all items in the cart
   const getTotal = productData => {
@@ -146,7 +137,7 @@ const MyCart = ({navigation}) => {
                 fontWeight: '600',
                 letterSpacing: 1,
               }}>
-              {data.productName}
+              {data.name}
             </Text>
             <View
               style={{
@@ -162,11 +153,11 @@ const MyCart = ({navigation}) => {
                   maxWidth: '85%',
                   marginRight: 4,
                 }}>
-                &#8377;{data.productPrice}
+                &#8377;{data.price}
               </Text>
               <Text>
                 (~&#8377;
-                {data.productPrice + data.productPrice / 20})
+                {data.price + data.price / 20})
               </Text>
             </View>
           </View>
@@ -217,7 +208,7 @@ const MyCart = ({navigation}) => {
                 />
               </View>
             </View>
-            <TouchableOpacity onPress={() => removeItemFromCart(data.id)}>
+            <TouchableOpacity onPress={() => removeItemFromCart(data._id)}>
               <MaterialCommunityIcons
                 name="delete-outline"
                 style={{

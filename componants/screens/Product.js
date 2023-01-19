@@ -5,7 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
 import { SERVER_URL } from '../utils/constants';
-import useCart from '../../hooks/useCartProduct';
+
 
 const Product = ({route, navigation}) =>{
    const {productID} = route.params;
