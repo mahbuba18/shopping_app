@@ -18,6 +18,7 @@ const MyCart = ({navigation}) => {
   const [carts, setCarts] = useState([])
   const [products, setProducts] = useProducts()
   const [cartProducts, setCartProducts]= useState()
+  const [reFetch, setReFetch]= useState(true)
   const [total, setTotal] = useState(null);
 
   useEffect(() => {
@@ -27,19 +28,20 @@ const MyCart = ({navigation}) => {
           token: `Bearer ${JSON.parse(await AsyncStorage.getItem('accessToken'))}`,
           'Content-Type': 'application/json'
         }
-      }).then(res=>setCarts(res.data[0].products))
+      }).then(res=>setCarts(res.data?.pop().products))
       .catch(err=>console.log(err.message))
     }
     load();
-  }, []);
+  }, [reFetch]);
 
   useEffect(() => {
    const getCartProducts =(products, carts) => {
+    console.log({products,carts})
         return products?.filter(product=>carts.some(cart=> cart.productId == product._id))
       }
       const result = getCartProducts(products, carts)
       setCartProducts(result)
-  },[carts, products])
+  },[carts, products, reFetch])
 
    
 
@@ -59,20 +61,25 @@ const MyCart = ({navigation}) => {
   //remove data from Cart
 
   const removeItemFromCart = async id => {
-    let itemArray = await AsyncStorage.getItem('cartItems');
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      for (let index = 0; index < array.length; index++) {
-        if (array[index] == id) {
-          array.splice(index, 1);
+    try {
+      //console.log({id})
+      await axios.delete(`${SERVER_URL}/api/carts/${id}`,{
+        headers: {
+          token: `Bearer ${JSON.parse(await AsyncStorage.getItem('accessToken'))}`,
+          'Content-Type': 'application/json'
         }
+      }).then(res=>{
+        if(res.data.result){
+          setReFetch(!reFetch);
 
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        //getDataFromDB();
-      }
+        }
+      })
+      .catch(err=>console.log(err.message))
+      
+    } catch (error) {
+      
     }
-  };
+  }
 
   //checkout
 

@@ -54,7 +54,10 @@ const Product = ({route, navigation}) =>{
       );
       navigation.navigate('Home');
     })
-     .catch(err=>console.log(err.message))
+     .catch(err=>{
+      console.log(err)
+      navigation.navigate('EmailCheck');
+    })
 
 
   //   let itemArray = await AsyncStorage.getItem('cartItems');

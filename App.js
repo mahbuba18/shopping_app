@@ -13,6 +13,7 @@ import Login from './componants/screens/Login';
 import SignUp from './componants/screens/Signup';
 import Product from './componants/screens/Product';
 import { ProductCard } from './componants/screens/ProductCard';
+import EmailCheck from './componants/screens/EmailCheck';
 
 
 
@@ -31,6 +32,7 @@ const Stack = createNativeStackNavigator();
           <Stack.Screen name='Home' component={Home}/>
           <Stack.Screen name='MyCart' component={MyCart}/>
           <Stack.Screen name='Product' component={Product}/>
+          <Stack.Screen name='EmailCheck' component={EmailCheck}/>
           <Stack.Screen name='ProductCard' component={ProductCard}/>
           <Stack.Screen name='Bottom' component={MyTabs}/>
           <Stack.Screen name='Login' component={Login}/>
