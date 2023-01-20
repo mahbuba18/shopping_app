@@ -137,7 +137,9 @@ const renderProduct=({item,index})=>{
                   paddingLeft:16,
                    
                   }}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                >
                 <Entypo 
                 name='chevron-left'
                  style={{

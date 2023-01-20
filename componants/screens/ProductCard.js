@@ -4,8 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export const ProductCard=({data, navigation})=>{
     return(
-      <TouchableOpacity
-      onPress={()=> navigation.navigate("Product",{productID: data._id})}
+      <View
       style={{
         width:'48%',
         marginVertical:14,
@@ -55,56 +54,60 @@ export const ProductCard=({data, navigation})=>{
           }}
           />
         </View>
-        <Text style={{
-          fontSize:12,
-          color:COLOURS.black,
-          fontWeight:'600',
-          marginBottom:2,
-        }}>
-          {data?.name}
-        </Text>
-        {data.category? (
-          data.inStock=true ? (
-          <View 
-          style={{
-            flexDirection:'row',
-            alignItems:'center',
+        <TouchableOpacity
+          onPress={()=> navigation.navigate("Product",{productID: data._id})}
+        >
+          <Text style={{
+            fontSize:12,
+            color:COLOURS.black,
+            fontWeight:'600',
+            marginBottom:2,
           }}>
-            <FontAwesome name="circle" style={{
-              fontSize:12,
-              marginRight:6,
-              color:COLOURS.green,
-            }}
-            />
-            <Text style={{
-              fontSize:12,
-              color:COLOURS.green,
+            {data?.name}
+          </Text>
+          {data.category? (
+            data.inStock? (
+            <View 
+            style={{
+              flexDirection:'row',
+              alignItems:'center',
             }}>
-              Available
-            </Text>
-          </View>
-        ):(<View 
-          style={{
-            flexDirection:'row',
-            alignItems:'center',
-          }}>
-            <FontAwesome name="circle" style={{
-              fontSize:12,
-              marginRight:6,
-              color:COLOURS.red,
-            }}
-            />
-            <Text style={{
-              fontSize:12,
-              color:COLOURS.red,
+              <FontAwesome name="circle" style={{
+                fontSize:12,
+                marginRight:6,
+                color:COLOURS.green,
+              }}
+              />
+              <Text style={{
+                fontSize:12,
+                color:COLOURS.green,
+              }}>
+                Available
+              </Text>
+            </View>
+          ):(<View 
+            style={{
+              flexDirection:'row',
+              alignItems:'center',
             }}>
-              Unavailable
-            </Text>
-          </View>)
-        ): null}
-        <Text style={{
-          color:COLOURS.black,
-        }}>Price: {'\u09F3'}{data.price}</Text>
-      </TouchableOpacity>
+              <FontAwesome name="circle" style={{
+                fontSize:12,
+                marginRight:6,
+                color:COLOURS.red,
+              }}
+              />
+              <Text style={{
+                fontSize:12,
+                color:COLOURS.red,
+              }}>
+                Unavailable
+              </Text>
+            </View>)
+          ): null}
+          <Text style={{
+            color:COLOURS.black,
+          }}>Price: {'\u09F3'}{data.price}</Text>
+        </TouchableOpacity>
+      </View>
     )
   }

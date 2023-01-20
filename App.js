@@ -14,6 +14,7 @@ import SignUp from './componants/screens/Signup';
 import Product from './componants/screens/Product';
 import { ProductCard } from './componants/screens/ProductCard';
 import EmailCheck from './componants/screens/EmailCheck';
+import CheckOut from './componants/screens/Checkout';
 
 
 
@@ -22,25 +23,24 @@ const App = () => {
 const Stack = createNativeStackNavigator();
 
   return (
-    
     <NavigationContainer>
-      <Stack.Navigator
-      initialRouteName='Bottom'
-        screenOptions={{
-          headerShown:false,
-        }}>
-          <Stack.Screen name='Home' component={Home}/>
-          <Stack.Screen name='MyCart' component={MyCart}/>
-          <Stack.Screen name='Product' component={Product}/>
-          <Stack.Screen name='EmailCheck' component={EmailCheck}/>
-          <Stack.Screen name='ProductCard' component={ProductCard}/>
-          <Stack.Screen name='Bottom' component={MyTabs}/>
-          <Stack.Screen name='Login' component={Login}/>
-          <Stack.Screen name='Signup' component={SignUp}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-     
-
+        <Stack.Navigator
+          initialRouteName='Bottom'
+          screenOptions={{
+            headerShown:false,
+          }}
+        >
+            <Stack.Screen name='Home' component={Home}/>
+            <Stack.Screen name='MyCart' component={MyCart}/>
+            <Stack.Screen name='Product' component={Product}/>
+            <Stack.Screen name='EmailCheck' component={EmailCheck}/>
+            <Stack.Screen name='CheckOut' component={CheckOut}/>
+            <Stack.Screen name='ProductCard' component={ProductCard}/>
+            <Stack.Screen name='Bottom' component={MyTabs}/>
+            <Stack.Screen name='Login' component={Login}/>
+            <Stack.Screen name='Signup' component={SignUp}/>
+        </Stack.Navigator>
+      </NavigationContainer>
   );
 };
 

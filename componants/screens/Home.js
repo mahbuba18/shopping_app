@@ -3,26 +3,13 @@ import { View,Text,ScrollView,StatusBar, TouchableOpacity ,Image} from 'react-na
 import {COLOURS,Items} from '../database/Database'
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { ProductCard } from './ProductCard';
-import axios from 'axios';
-import { SERVER_URL } from '../utils/constants';
+import useProducts from '../../hooks/useProducts';
 
 const Home = ({navigation}) => {
-  const [products, setProducts] = useState([]);
-  const [accessory, setAccessory] = useState([]);
 
-  //get called on screen loads
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      axios.get(`${SERVER_URL}/api/products`)
-      .then(res=>setProducts(res.data))
-      .catch(err=>console.log({err: err.message}))
-    });
+  const [products, setProducts] = useProducts();
 
-    return unsubscribe;
-     
-  }, [navigation]);
         
   return (
     <View
